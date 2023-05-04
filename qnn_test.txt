@@ -1,0 +1,18 @@
+export QNN_SDK_ROOT=/home/nzhang/Qualcomm/qnn-v2.3.0
+source ${QNN_SDK_ROOT}/target/x86_64-linux-clang/bin/check-python-dependency.sh
+source ${QNN_SDK_ROOT}/target/x86_64-linux-clang/bin/check-linux-dependency.sh
+export ANDROID_NDK_ROOT=/home/nzhang/Qualcomm/Hexagon_SDK/5.2.0.0/tools/android-ndk-r19c
+sudo apt-get install g++-aarch64-linux-gnu
+source target/x86_64-linux-clang/bin/envsetup.sh -t /home/nzhang/.local/lib/python3.6/site-packages/tensorflow
+
+
+
+python3 ${QNN_SDK_ROOT}/examples/Models/InceptionV3/scripts/setup_inceptionv3.py -a ~/tmpdir -d
+
+${QNN_SDK_ROOT}/target/x86_64-linux-clang/bin/qnn-tensorflow-converter   --input_network ${QNN_SDK_ROOT}/examples/Models/InceptionV3/tensorflow/inception_v3_2016_08_28_frozen.pb   --input_dim input 1,299,299,3   --out_node InceptionV3/Predictions/Reshape_1   --output_path ${QNN_SDK_ROOT}/examples/Models/InceptionV3/model/Inception_v3.cpp
+
+${QNN_SDK_ROOT}/target/x86_64-linux-clang/bin/qnn-model-lib-generator   -c ${QNN_SDK_ROOT}/examples/Models/InceptionV3/model/Inception_v3.cpp   -b ${QNN_SDK_ROOT}/examples/Models/InceptionV3/model/Inception_v3.bin   -o ${QNN_SDK_ROOT}/examples/Models/InceptionV3/model_libs
+
+export PATH=/home/nzhang/Qualcomm/Hexagon_SDK/5.2.0.0/tools/android-ndk-r19c/build:${PATH}
+
+pip3 install colorama requests Mako==1.1.0 numpy==1.16.6 pandas==0.24.2 PyYAML==3.10.0 scikit-image==0.15.0    scipy==1.3.1 six==1.14.0 lxml==4.6.2 onnx-simplifier==0.3.5 tensorflow==2.3.0 tflite==2.3.0    
